@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Smirate</string>
+    <string name="description">オムロンからもらう値\n（別スレッドでbluetooth通信をした結果を下に書き込む予定（実際はActivityのフィールド変数経由でいいけどわかりやすくするためにいったんコントロール経由）\n10秒感覚でテキストボックスの内容をアラート表示</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
