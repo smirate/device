@@ -33,7 +33,7 @@ public class TestTimerThred extends AbstractTimerThred {
 
         // アラート表示（ここでＰＯＳＴ送信すればいいはず）
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("タイトル");
+        builder.setTitle("ID=" + context.myStreamId);
         builder.setMessage(text);
         builder.show();
     }
