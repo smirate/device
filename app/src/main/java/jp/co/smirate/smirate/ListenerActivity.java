@@ -1,9 +1,11 @@
 package jp.co.smirate.smirate;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import jp.co.smirate.timer.TestTimerThred;
@@ -64,6 +66,15 @@ public class ListenerActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void toNotification(View view) {
+        switch (view.getId()){
+            case R.id.toNotification:
+                Intent intent = new Intent(this, NotificationActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 
 }
