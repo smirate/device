@@ -29,7 +29,7 @@ public class PostTimerThred extends AbstractTimerThred {
         String streamId = context.streamId4Post;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("定期POSTタイマー");
+        builder.setTitle("定期POSTタイマー" + context.registrationId);
         if(streamId != null) {
             builder.setMessage("放送局：" + streamId);
             builder.show();

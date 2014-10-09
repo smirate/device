@@ -1,13 +1,16 @@
 package jp.co.smirate.smirate;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -21,6 +24,17 @@ public class NotificationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+
+        Intent intent = getIntent();
+        String notification = intent.getStringExtra("notification");
+        if(intent != null && notification != null) {
+            TextView text = (TextView) this.findViewById(R.id.notification);
+            text.setText(notification);
+
+            // 通知バー除去
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(R.string.app_name);
+        }
     }
 
     @Override

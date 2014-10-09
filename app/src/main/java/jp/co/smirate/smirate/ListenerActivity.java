@@ -45,6 +45,7 @@ public class ListenerActivity extends Activity {
 
 
     private GoogleCloudMessaging gcm;
+    public String registrationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,8 @@ public class ListenerActivity extends Activity {
         gcm = GoogleCloudMessaging.getInstance(getBaseContext());
         register();
 
+        // ★★★★
+        // サーバーへregistrationIdを送る
     }
 
     private void register() {
@@ -71,6 +74,7 @@ public class ListenerActivity extends Activity {
                 try {
                     token = gcm.register("792401251374");
                     Log.i("registrationId", token);
+                    registrationId = token;
                 }
                 catch (IOException e) {
                     Log.i("Registration Error", e.getMessage());
