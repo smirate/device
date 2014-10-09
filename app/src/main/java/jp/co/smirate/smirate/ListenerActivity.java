@@ -19,55 +19,37 @@ import com.evixar.EARSDK;
 
 import net.enswer.ear.*;
 
-import jp.co.smirate.timer.TestTimerThred;
+import jp.co.smirate.timer.PostTimerThred;
 
 /**
  * 10秒感覚でテキストボックスの中身をアラート表示するのを作ってみた
  */
 public class ListenerActivity extends Activity {
+    /** POST用放送局ID保管フィールド. */
+    public String streamId4Post;
 
-    // テスト的なタイマー
-    private TestTimerThred testTimer;
+    // 定期POST実行用タイマー
+    private PostTimerThred postTimerThred;
 
-    // evixar用サンプルから start
+    // evixar 処理用
     private String liveAppKey;
-
     private EARSDK ear;
     private boolean finishEarInit;
     private boolean earIsRunning;
-
     private EarResultHandler earResultHandler = new EarResultHandler();
     private EarErrorHandler earErrorHandler = new EarErrorHandler();
-    private Button mEarButton;
-
-    public String myStreamId;
-    // evixar用サンプルから end
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listener);
 
+        // 定期POST実行用タイマーを作成
+        postTimerThred = new PostTimerThred(10000, this);
 
-        // タイマーを作成
-        // 分かりやすくアラートを出すために、画面上のコントロールを渡す
-        // 実際にbluetoothの通信結果を渡す時はこのインスタンスのフィールド変数経由でいいと思う
-        testTimer = new TestTimerThred(10000, (EditText) findViewById(R.id.omronMsg), this);
-
-        // evixar用サンプルから start
-
-        mEarButton = (Button)findViewById(R.id.onTest);
-        mEarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                touchEarButton();
-            }
-        });
+        // evixar初期化
         finishEarInit = false;
         init();
-        // evixar用サンプルから end
     }
 
     @Override
@@ -75,43 +57,52 @@ public class ListenerActivity extends Activity {
         super.onResume();
 
         // タイマー実行開始
-        if(testTimer != null) {
-            testTimer.execute();
+        if(postTimerThred != null) {
+            postTimerThred.execute();
         }
 
-        // evixar用サンプルから start
-        if(!finishEarInit) init();
-        // evixar用サンプルから end
+        // evixar開始
+        if(!finishEarInit) {
+            init();
+        }
+        if(!earIsRunning){
+            earIsRunning = true;
+            ear.startRecognizing();
+        }
     }
 
     @Override
     protected void onPause() {
         // タイマー中断
-        if(testTimer != null) {
-            testTimer.cancel();
+        if(postTimerThred != null) {
+            postTimerThred.cancel();
         }
         super.onPause();
 
-        // evixar用サンプルから start
-        if(earIsRunning) touchEarButton();
+        // evixar停止
+        if(earIsRunning) {
+            earIsRunning = false;
+            ear.stopRecognizing();
+        }
         if(finishEarInit){
             ear.release();
             finishEarInit = false;
         }
-        // evixar用サンプルから end
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        // evixar用サンプルから start
-        if(earIsRunning) touchEarButton();
+        // evixar停止
+        if(earIsRunning) {
+            earIsRunning = false;
+            ear.stopRecognizing();
+        }
         if(finishEarInit){
             ear.release();
             finishEarInit = false;
         }
-        // evixar用サンプルから end
     }
 
     @Override
@@ -133,6 +124,10 @@ public class ListenerActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 通知画面へ遷移
+     * @param view
+     */
     public void toNotification(View view) {
         switch (view.getId()){
             case R.id.toNotification:
@@ -142,68 +137,31 @@ public class ListenerActivity extends Activity {
         }
     }
 
-
-    // evixar用サンプルから start
+    // evixar初期化
     private void init() {
-
         earIsRunning = false;
-
-        // live app key
         liveAppKey = "v4aEbiBDtFI5g3mXL7Us6RRtGkLQbAzU";
-        // live access key
         String liveAccessKey = "dnZ2dnZ2dnbWJ8ptzKB+nKWv+ECxeU9rASmuzct3i7kwPCl2xWbPQFpk6fjbyX8g+AKDCco7B0OKwW9X3IOdJQfdz+drqZOA6DLMoDf32y0PcnzMeKV448QvZSmOcHOhSFZpvcLuNZphTOESLknvFtYrGW10Y25ooco0LJeSI3mQG2fT9pWSMA==";
-
         Context context = getBaseContext().getApplicationContext();
         ear = new EARSDK(liveAppKey, liveAccessKey, context, earResultHandler, earErrorHandler);
-
         finishEarInit = true;
     }
 
-    private void touchEarButton() {
-        if(earIsRunning){
-            earIsRunning = false;
-
-            // stop
-            ear.stopRecognizing();
-            mEarButton.setText("Start");
-        }
-        else{
-            earIsRunning = true;
-
-            // start
-            ear.startRecognizing();
-            mEarButton.setText("Stop");
-        }
-    }
-
+    // evixar用ハンドラー
     @SuppressLint("HandlerLeak")
     private class EarResultHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-
+            streamId4Post = null;
             EARMatchResult matchResult = (EARMatchResult)msg.obj;
-
             EARAppkeyMatchResult appkeyMatchResult = matchResult.appkeyMatchResults.get(matchResult.activeAppkey);
             switch (appkeyMatchResult.matchState) {
                 case EAR_MATCHSTATE_MATCHED:
-
                     for(EARMatchItem item : appkeyMatchResult.matchItems){
                         if(item instanceof EARStreamMatchItem){
-
                             EARStreamMatchItem streamMatchItem = (EARStreamMatchItem)item;
                             Log.i("RESULT", "streamId = " + streamMatchItem.streamId);
-                            Log.i("MSG", msg.toString());
-
-                            myStreamId = streamMatchItem.streamId;
-                            // 所望の結果を得て、処理を終了する例
-						/*
-						if(streamMatchItem.streamId.equals("TBS") || streamMatchItem.streamId.equals("BSTBS")){
-							if(earIsRunning){
-								touchEarButton();
-							}
-						}
-						*/
-
+                            streamId4Post = streamMatchItem.streamId;
                         }
                     }
                     break;
@@ -222,6 +180,7 @@ public class ListenerActivity extends Activity {
         }
     }
 
+    // evixar用エラーハンドラー
     @SuppressLint("HandlerLeak")
     private class EarErrorHandler extends Handler {
         @Override
@@ -230,6 +189,4 @@ public class ListenerActivity extends Activity {
             Log.e("RESULT","errcode: " + code);
         }
     }
-    // evixar用サンプルから end
-
 }
