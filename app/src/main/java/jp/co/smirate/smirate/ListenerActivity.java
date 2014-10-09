@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.evixar.EARSDK;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import net.enswer.ear.*;
+
+import java.io.IOException;
 
 import jp.co.smirate.timer.PostTimerThred;
 
@@ -39,6 +43,9 @@ public class ListenerActivity extends Activity {
     private EarResultHandler earResultHandler = new EarResultHandler();
     private EarErrorHandler earErrorHandler = new EarErrorHandler();
 
+
+    private GoogleCloudMessaging gcm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +57,27 @@ public class ListenerActivity extends Activity {
         // evixar初期化
         finishEarInit = false;
         init();
+
+
+        gcm = GoogleCloudMessaging.getInstance(getBaseContext());
+        register();
+
+    }
+
+    private void register() {
+        new AsyncTask(){
+            protected Object doInBackground(final Object... params) {
+                String token;
+                try {
+                    token = gcm.register("792401251374");
+                    Log.i("registrationId", token);
+                }
+                catch (IOException e) {
+                    Log.i("Registration Error", e.getMessage());
+                }
+                return true;
+            }
+        }.execute(null, null, null);
     }
 
     @Override

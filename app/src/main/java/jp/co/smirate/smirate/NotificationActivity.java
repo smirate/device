@@ -1,21 +1,27 @@
 package jp.co.smirate.smirate;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.io.IOException;
+
 
 public class NotificationActivity extends Activity {
+    public String testMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

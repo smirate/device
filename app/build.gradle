@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    buildToolsVersion '20.0.0'
 
     defaultConfig {
         applicationId "jp.co.smirate.smirate"
@@ -21,4 +21,6 @@ android {
 
 dependencies {
     compile files('libs/earsdk.jar')
+    compile 'com.google.android.gms:play-services:6.1.11'
+    compile 'com.android.support:support-v4:20.0.0'
 }

@@ -38,4 +38,25 @@ public class PostTimerThred extends AbstractTimerThred {
             builder.show();
         }
     }
+/*
+
+    public String doPost(String url) {
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpPost method = new HttpPost(url);
+
+        // リクエストパラメータの設定
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("params_id", getId()));
+        params.add(new BasicNameValuePair("params_data", getData()));
+        try {
+            method.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
+            HttpResponse response = client.execute(method);
+            int status = response.getStatusLine().getStatusCode();
+            return "Status:" + status;
+        } catch (Exception e) {
+            return "Error:" + e.getMessage();
+        }
+    }
+    */
 }
