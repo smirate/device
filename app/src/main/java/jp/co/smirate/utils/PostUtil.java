@@ -17,10 +17,17 @@ import jp.co.smirate.cst.PostCst;
 import jp.co.smirate.dto.OmronInfoDto;
 import jp.co.smirate.dto.StreamInfoDto;
 
+/**
+ * POST用ユーティリティクラス
+ */
 public class PostUtil implements PostCst {
+    // POST日時のフォーマット
     private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
-     enum Encode {
+    /**
+     * エンコード種類
+     */
+    public enum Encode {
         UTF8("utf-8");
 
         public final String val;
@@ -30,12 +37,24 @@ public class PostUtil implements PostCst {
         }
     }
 
+    /**
+     * デバイストークン送信用POST
+     * @param deviceTokenId
+     * @return
+     */
     public static HttpResponse post4DeviceTokenId(String deviceTokenId) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("deviceTokenId", deviceTokenId));
         return post(Url.DEVICETOKENID.val, params);
     }
 
+    /**
+     * 番組情報など送信用POST
+     * @param omronInfoDto
+     * @param streamInfoDto
+     * @param deviceTokenId
+     * @return
+     */
     public static HttpResponse post4StreamInfo(OmronInfoDto omronInfoDto, StreamInfoDto streamInfoDto, String deviceTokenId) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("streamId", streamInfoDto.streamId));
@@ -53,10 +72,23 @@ public class PostUtil implements PostCst {
         return post(Url.STREAMINFO.val, params);
     }
 
+    /**
+     * POST処理（エンコードはUTF-8）
+     * @param url
+     * @param params
+     * @return
+     */
     public static HttpResponse post(String url, List<NameValuePair> params) {
         return post(url, params, Encode.UTF8);
     }
 
+    /**
+     * POST処理コア
+     * @param url
+     * @param params
+     * @param encode
+     * @return
+     */
     public static HttpResponse post(String url, List<NameValuePair> params, Encode encode) {
         // 現在日時追加
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
