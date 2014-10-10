@@ -16,7 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.evixar.EARSDK;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.evixar.*;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import net.enswer.ear.*;
@@ -31,6 +34,10 @@ import jp.co.smirate.timer.PostTimerThred;
 public class ListenerActivity extends Activity {
     /** POST用放送局ID保管フィールド. */
     public String streamId4Post;
+    /** POST用番組情報保管フィールド. */
+    public JSONObject streamJson4Post;
+    /** POST用デバイストークンID. */
+    public String registrationId;
 
     // 定期POST実行用タイマー
     private PostTimerThred postTimerThred;
@@ -43,9 +50,8 @@ public class ListenerActivity extends Activity {
     private EarResultHandler earResultHandler = new EarResultHandler();
     private EarErrorHandler earErrorHandler = new EarErrorHandler();
 
-
+    // 通知処理用
     private GoogleCloudMessaging gcm;
-    public String registrationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +65,14 @@ public class ListenerActivity extends Activity {
         finishEarInit = false;
         init();
 
-
+        // 通知用処理
         gcm = GoogleCloudMessaging.getInstance(getBaseContext());
         register();
 
-        // ★★★★
-        // サーバーへregistrationIdを送る
+        // TODO:★★★★サーバーへregistrationIdを送る
     }
 
+    // デバイストークン登録
     private void register() {
         new AsyncTask(){
             protected Object doInBackground(final Object... params) {
@@ -171,6 +177,8 @@ public class ListenerActivity extends Activity {
 
     // evixar初期化
     private void init() {
+        metaResolver.init();
+
         earIsRunning = false;
         liveAppKey = "v4aEbiBDtFI5g3mXL7Us6RRtGkLQbAzU";
         String liveAccessKey = "dnZ2dnZ2dnbWJ8ptzKB+nKWv+ECxeU9rASmuzct3i7kwPCl2xWbPQFpk6fjbyX8g+AKDCco7B0OKwW9X3IOdJQfdz+drqZOA6DLMoDf32y0PcnzMeKV448QvZSmOcHOhSFZpvcLuNZphTOESLknvFtYrGW10Y25ooco0LJeSI3mQG2fT9pWSMA==";
@@ -194,6 +202,28 @@ public class ListenerActivity extends Activity {
                             EARStreamMatchItem streamMatchItem = (EARStreamMatchItem)item;
                             Log.i("RESULT", "streamId = " + streamMatchItem.streamId);
                             streamId4Post = streamMatchItem.streamId;
+
+                            metaResolver.resolve(streamMatchItem.streamId, new AsyncCallback() {
+                                public void onPreExecute() {
+                                    // do something
+                                }
+                                public void onProgressUpdate(int progress) {
+                                    // do something
+                                }
+                                public void onPostExecute(String response) {
+                                    // do something
+                                    // Log.i("META",response);
+                                    try {
+                                        JSONObject json = new JSONObject(response);
+                                        streamJson4Post = json;
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                public void onCancelled() {
+                                    // do something
+                                }
+                            });
                         }
                     }
                     break;

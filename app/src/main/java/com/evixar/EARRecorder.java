@@ -57,7 +57,7 @@ public class EARRecorder implements Runnable {
                     RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                     RECORDER_AUDIO_ENCODING, mBufferSize);
         }
-
+        
         if (mRecorder.getState() == AudioRecord.STATE_UNINITIALIZED) {
             stop();
             return false;
