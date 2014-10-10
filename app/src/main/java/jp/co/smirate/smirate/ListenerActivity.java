@@ -2,16 +2,19 @@ package jp.co.smirate.smirate;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +34,7 @@ import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.timer.PostTimerThred;
 import jp.co.smirate.utils.PostUtil;
 
-public class ListenerActivity extends Activity implements EvixarCst, GcmCst, PostCst {
+public class ListenerActivity extends FragmentActivity implements EvixarCst, GcmCst, PostCst ,BluetoothFragment.BluetoothCallback {
     /** POST用番組情報. */
     public StreamInfoDto streamInfoDto4Post;
     /** POST用OMRON情報. */
@@ -52,6 +55,10 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
     // 通知処理用
     private GoogleCloudMessaging gcm;
 
+    // bluetooth処理用
+    BluetoothFragment mBluetoothFragment;
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +78,56 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
         // 通知用処理
         gcm = GoogleCloudMessaging.getInstance(getBaseContext());
         register();
+
+        // bluetooth処理用
+        Bundle args = new Bundle();
+        args.putInt(BluetoothFragment.EXTRA_UUID, BluetoothFragment.SPP_MODE);
+        if (mBluetoothFragment == null) {
+            mBluetoothFragment = new BluetoothFragment();
+            getSupportFragmentManager().beginTransaction().add(mBluetoothFragment, "BluetoothFragment").commit();
+        }
+    }
+
+    // bluetooth処理用
+    public void onCheckAvailability(boolean isAvailable) {
+        String text = "onCheckAvailability : " + isAvailable;
+        Log.d(TAG, text);
+        showToast(text);
+    }
+    public void onChangeBluetoothState(boolean enabled) {
+        String text = "onChangeBluetoothState : " + enabled;
+        Log.d(TAG, text);
+        showToast(text);
+    }
+    public void onConnected(boolean connected) {
+        String text = "onConnected : " + connected;
+        Log.d(TAG, text);
+        showToast(text);
+    }
+    public void onOpenConnection() {
+        Log.d(TAG, "onOpenConnection");
+        showToast("onOpenConnection");
+    }
+
+    // オムロンから受信したデータはここで処理する
+    public void onDataArrived(int length, byte[] buffer) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < length; i++) {
+            sb.append(buffer[i] + " ");
+        }
+        String text = "onDataArrived : " + length + ", " + sb.toString();
+        Log.d(TAG, text);
+        showToast(text);
+    }
+
+    public void write(byte[] bytes) {
+        if (mBluetoothFragment != null) {
+            mBluetoothFragment.write(bytes);
+        }
+    }
+
+    private void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
     // デバイストークン登録

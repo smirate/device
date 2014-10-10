@@ -45,6 +45,10 @@ public class PostTimerThred extends AbstractTimerThred {
             builder.setMessage(buf);
             builder.show();
 
+            //TODO: bluetoothへコマンド送信
+            context.write(new byte[] { 0x50, 0x4d, 0x03 });
+
+
             PostUtil.post4StreamInfo(omronInfoDto, streamInfoDto, context.deviceTokenId);
         } else {
             builder.setMessage("放送局IDが取得できなかった");
