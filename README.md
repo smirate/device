@@ -18,9 +18,6 @@ ListenerActivity：待ち受け用のActivityです。
 ・Timer処理にて、フィールド変数の情報を取得し、サーバーへリクエスト送信
 
 
-2014/10/9 1:23
-エヴィクサーのサンプルを無理やり組み込んだので、ソースがちょっと荒れてきた感じ。寝て起きたらリファクタリングします。
-
 NotificationActivity：通知用のActivityです。
 ------
 
@@ -28,5 +25,15 @@ pushされた通知から起動します。
 
 pushされたデータから画面に表示するテキストを構築します。
 
-TVON用のボタンを押下することで、pushされた番組データをもとにTVを起動します。
+※TVのリモコン操作はしない
 
+キー情報
+------
+
+一時的なもの
+
+PJ:540534399326
+
+API:AIzaSyCPtVaUNHozHkWpBfOGwcNQfuzcIQ6fzZw
+
+token:APA91bGmoS8A0j92U1xLdeQBmhRCeJCsGHVu4Wvu7LVDvW9NVD4b_PJDr4F-GXHpsoLYmNAUNFtEx5UpWb_R_g5RmrZS1odzBwrYDAVDen-iBVos_GlgRFpIB-wq6fFBu8WooWj_DXYa85QfZVlVPkCjA9dBST4y0JOwtPqfh-BDwMVfqRB_XH0
