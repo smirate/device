@@ -16,6 +16,7 @@ public class ExternalReceiver extends BroadcastReceiver implements NotificationC
 
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
+
         if(intent != null && extras.getString(NOTIFICATION_KEY) != null){
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification notification = new Notification(android.R.drawable.btn_default, Msg.TITLE.val, System.currentTimeMillis());

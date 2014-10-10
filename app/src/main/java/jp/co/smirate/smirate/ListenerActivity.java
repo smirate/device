@@ -247,28 +247,4 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
             Log.e("EvixarErrorHandler","errcode: " + code);
         }
     }
-
-    public void doPostInfo(View view) {
-        switch (view.getId()){
-            case R.id.doPostInfo:
-
-                OmronInfoDto omronInfoDto = new OmronInfoDto();
-                omronInfoDto.smirate = "えがおりつ";
-
-                StreamInfoDto streamInfoDto = new StreamInfoDto();
-                streamInfoDto.streamId = "TBS";
-                streamInfoDto.serviceId = "sid";
-                streamInfoDto.eventId = "eid";
-                streamInfoDto.title = "たいとる";
-                streamInfoDto.start = "かいしじかん";
-                streamInfoDto.end = "おわりじかん";
-                streamInfoDto.description = "ばんぐみがいよう";
-                streamInfoDto.detail = "番組ないよう";
-                streamInfoDto.actors = "しゅつえんしゃ";
-                String deviceTokenId = "でばいすとーくん";
-
-
-                break;
-        }
-    }
 }

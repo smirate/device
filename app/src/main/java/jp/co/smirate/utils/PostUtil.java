@@ -116,13 +116,13 @@ public class PostUtil implements PostCst {
                 }
 
                 // HTTPリクエスト発行
-                AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android HTTP Client Test");
+                AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android HTTP Client");
                 HttpResponse response = null;
                 String response_str = "NG";
                 try {
                     response = httpClient.execute(request);
                     // HttpResponseのEntityデータをStringへ変換
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), encode.val));
                     StringBuilder builder = new StringBuilder();
                     String line = null;
                     while ((line = reader.readLine()) != null) {
