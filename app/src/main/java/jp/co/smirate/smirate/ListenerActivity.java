@@ -71,8 +71,6 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
         // 通知用処理
         gcm = GoogleCloudMessaging.getInstance(getBaseContext());
         register();
-
-        PostUtil.post4DeviceTokenId(deviceTokenId);
     }
 
     // デバイストークン登録
@@ -84,6 +82,7 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
                     token = gcm.register(PJ_NUMBER);
                     Log.i("registrationId", token);
                     deviceTokenId = token;
+                    PostUtil.post4DeviceTokenId(token);
                 }
                 catch (IOException e) {
                     Log.i("Registration Error", e.getMessage());

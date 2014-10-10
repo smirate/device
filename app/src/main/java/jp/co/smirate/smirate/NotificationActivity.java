@@ -28,10 +28,13 @@ public class NotificationActivity extends Activity implements NotificationCst {
         setContentView(R.layout.activity_notification);
 
         Intent intent = getIntent();
-        String notification = intent.getStringExtra(NOTIFICATION_KEY);
-        if(intent != null && notification != null) {
+
+        String title = intent.getStringExtra(NotificationKey.TITLE.val);
+        String smirate = intent.getStringExtra(NotificationKey.SMIRATE.val);
+
+        if(intent != null && title != null && smirate != null) {
             TextView text = (TextView) this.findViewById(R.id.notification);
-            text.setText(notification);
+            text.setText(title + "の笑顔率" + smirate + "%!");
 
             // 通知バー除去
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

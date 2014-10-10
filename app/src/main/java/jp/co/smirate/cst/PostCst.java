@@ -5,7 +5,6 @@ public interface PostCst {
     public final long PERIOD = 10000;
 
     public enum Url {
-        //TODO:★★★URL決まったらここに入れる
         STREAMINFO("http://ec2-54-172-76-222.compute-1.amazonaws.com/dataInsert.php"),
         DEVICETOKENID("http://ec2-54-172-76-222.compute-1.amazonaws.com/tokenRegist.php");
 
