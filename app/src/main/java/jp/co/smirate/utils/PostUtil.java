@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import jp.co.smirate.cst.PostCst;
+import jp.co.smirate.dto.OmronInfoDto;
 import jp.co.smirate.dto.StreamInfoDto;
 
 public class PostUtil implements PostCst {
     private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
-    public enum Encode {
+     enum Encode {
         UTF8("utf-8");
 
         public final String val;
@@ -35,7 +36,7 @@ public class PostUtil implements PostCst {
         return post(Url.DEVICETOKENID.val, params);
     }
 
-    public static HttpResponse post4StreamInfo(StreamInfoDto streamInfoDto, String deviceTokenId) {
+    public static HttpResponse post4StreamInfo(OmronInfoDto omronInfoDto, StreamInfoDto streamInfoDto, String deviceTokenId) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("streamId", streamInfoDto.streamId));
         params.add(new BasicNameValuePair("serviceId", streamInfoDto.serviceId));
@@ -47,6 +48,7 @@ public class PostUtil implements PostCst {
         params.add(new BasicNameValuePair("detail", streamInfoDto.detail));
         params.add(new BasicNameValuePair("actors", streamInfoDto.actors));
         params.add(new BasicNameValuePair("deviceTokenId", deviceTokenId));
+        params.add(new BasicNameValuePair("smirate", omronInfoDto.smirate));
 
         return post(Url.STREAMINFO.val, params);
     }

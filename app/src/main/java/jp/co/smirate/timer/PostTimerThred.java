@@ -2,6 +2,7 @@ package jp.co.smirate.timer;
 
 import android.app.AlertDialog;
 
+import jp.co.smirate.dto.OmronInfoDto;
 import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.smirate.ListenerActivity;
 import jp.co.smirate.utils.PostUtil;
@@ -27,6 +28,7 @@ public class PostTimerThred extends AbstractTimerThred {
     @Override
     protected void invokersMethod() {
         StreamInfoDto streamInfoDto = context.streamInfoDto4Post;
+        OmronInfoDto omronInfoDto = context.omronInfoDto4Post;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("定期POSTタイマー");
@@ -44,7 +46,7 @@ public class PostTimerThred extends AbstractTimerThred {
             builder.show();
 
             //TODO:★★★サーバーサイドできてから有効化
-            //PostUtil.post4StreamInfo(streamInfoDto, context.deviceTokenId);
+            //PostUtil.post4StreamInfo(omronInfoDto, streamInfoDto, context.deviceTokenId);
         } else {
             builder.setMessage("放送局IDが取得できなかった");
             builder.show();

@@ -26,6 +26,7 @@ import java.io.IOException;
 import jp.co.smirate.cst.EvixarCst;
 import jp.co.smirate.cst.GcmCst;
 import jp.co.smirate.cst.PostCst;
+import jp.co.smirate.dto.OmronInfoDto;
 import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.timer.PostTimerThred;
 import jp.co.smirate.utils.PostUtil;
@@ -33,6 +34,8 @@ import jp.co.smirate.utils.PostUtil;
 public class ListenerActivity extends Activity implements EvixarCst, GcmCst, PostCst {
     /** POST用番組情報. */
     public StreamInfoDto streamInfoDto4Post;
+    /** POST用OMRON情報. */
+    public OmronInfoDto omronInfoDto4Post;
     /** POST用デバイストークンID. */
     public String deviceTokenId;
 
@@ -56,6 +59,10 @@ public class ListenerActivity extends Activity implements EvixarCst, GcmCst, Pos
 
         // 定期POST実行用タイマーを作成
         postTimerThred = new PostTimerThred(PERIOD, this);
+
+        // TODO:omron関連のなにか。笑顔かどうかを表す何かを送ることになる想定
+        omronInfoDto4Post = new OmronInfoDto();
+        omronInfoDto4Post.smirate = "30";
 
         // evixar初期化
         finishEarInit = false;
