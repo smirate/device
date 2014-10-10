@@ -33,8 +33,11 @@ public class NotificationActivity extends Activity implements NotificationCst {
         String smirate = intent.getStringExtra(NotificationKey.SMIRATE.val);
 
         if(intent != null && title != null && smirate != null) {
-            TextView text = (TextView) this.findViewById(R.id.notification);
-            text.setText(title + "の笑顔率" + smirate + "%!");
+            TextView titleTextView = (TextView) this.findViewById(R.id.title);
+            titleTextView.setText(title);
+
+            TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
+            smirateTextView.setText(smirate + "%");
 
             // 通知バー除去
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
