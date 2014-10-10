@@ -1,5 +1,10 @@
 package jp.co.smirate.utils;
 
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
+import android.text.SpannableStringBuilder;
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -7,6 +12,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,10 +51,12 @@ public class PostUtil implements PostCst {
      * @param deviceTokenId
      * @return
      */
-    public static HttpResponse post4DeviceTokenId(String deviceTokenId) {
+    public static void post4DeviceTokenId(String deviceTokenId) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("deviceTokenId", deviceTokenId));
-        return post(Url.DEVICETOKENID.val, params);
+        params.add(new BasicNameValuePair("postDate", sdf.format(new Date())));
+        post(Url.DEVICETOKENID.val, params);
     }
 
     /**
@@ -55,7 +66,8 @@ public class PostUtil implements PostCst {
      * @param deviceTokenId
      * @return
      */
-    public static HttpResponse post4StreamInfo(OmronInfoDto omronInfoDto, StreamInfoDto streamInfoDto, String deviceTokenId) {
+    public static void post4StreamInfo(OmronInfoDto omronInfoDto, StreamInfoDto streamInfoDto, String deviceTokenId) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("streamId", streamInfoDto.streamId));
         params.add(new BasicNameValuePair("serviceId", streamInfoDto.serviceId));
@@ -68,8 +80,9 @@ public class PostUtil implements PostCst {
         params.add(new BasicNameValuePair("actors", streamInfoDto.actors));
         params.add(new BasicNameValuePair("deviceTokenId", deviceTokenId));
         params.add(new BasicNameValuePair("smirate", omronInfoDto.smirate));
+        params.add(new BasicNameValuePair("postDate", sdf.format(new Date())));
 
-        return post(Url.STREAMINFO.val, params);
+        post(Url.STREAMINFO.val, params);
     }
 
     /**
@@ -78,8 +91,8 @@ public class PostUtil implements PostCst {
      * @param params
      * @return
      */
-    public static HttpResponse post(String url, List<NameValuePair> params) {
-        return post(url, params, Encode.UTF8);
+    public static void post(String url, List<NameValuePair> params) {
+        post(url, params, Encode.UTF8);
     }
 
     /**
@@ -87,22 +100,53 @@ public class PostUtil implements PostCst {
      * @param url
      * @param params
      * @param encode
-     * @return
      */
-    public static HttpResponse post(String url, List<NameValuePair> params, Encode encode) {
-        // 現在日時追加
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        params.add(new BasicNameValuePair("postDate", sdf.format(new Date())));
+    public static void post(final String url,final List<NameValuePair> params, final Encode encode) {
+        final List<NameValuePair> sendParams = params;
+        new AsyncTask<Void, Void, String>() {
 
-        HttpResponse response;
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpPost method = new HttpPost(url);
-        try {
-            method.setEntity(new UrlEncodedFormEntity(params, encode.val));
-            response = client.execute(method);
-        } catch (Exception e) {
-            response = null;
-        }
-        return response;
+            @Override
+            protected String doInBackground(Void... params) {
+                // HTTPリクエストの構築
+                HttpPost request = new HttpPost(url);
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(sendParams, encode.val));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                // HTTPリクエスト発行
+                AndroidHttpClient httpClient = AndroidHttpClient.newInstance("Android HTTP Client Test");
+                HttpResponse response = null;
+                String response_str = "NG";
+                try {
+                    response = httpClient.execute(request);
+                    // HttpResponseのEntityデータをStringへ変換
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                    StringBuilder builder = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line + "\n");
+                    }
+                    response_str = builder.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    response_str = e.toString();
+                }
+
+                if(httpClient != null){
+                    httpClient.close();
+                }
+
+                return response_str; //返値はonPostExecuteに渡される
+            }
+
+
+            @Override
+            protected void onPostExecute(String result) { //引数はdoInBackgroundの結果
+                // 画面に文字列を表示
+                Log.i("response", result);
+            }
+        }.execute();
     }
 }

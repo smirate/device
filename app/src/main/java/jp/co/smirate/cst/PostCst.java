@@ -6,8 +6,8 @@ public interface PostCst {
 
     public enum Url {
         //TODO:★★★URL決まったらここに入れる
-        STREAMINFO("http://?????/"),
-        DEVICETOKENID("http://????/");
+        STREAMINFO("http://ec2-54-172-76-222.compute-1.amazonaws.com/dataInsert.php"),
+        DEVICETOKENID("http://ec2-54-172-76-222.compute-1.amazonaws.com/tokenRegist.php");
 
         public final String val;
 

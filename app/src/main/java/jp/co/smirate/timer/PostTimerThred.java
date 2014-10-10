@@ -45,8 +45,7 @@ public class PostTimerThred extends AbstractTimerThred {
             builder.setMessage(buf);
             builder.show();
 
-            //TODO:★★★サーバーサイドできてから有効化
-            //PostUtil.post4StreamInfo(omronInfoDto, streamInfoDto, context.deviceTokenId);
+            PostUtil.post4StreamInfo(omronInfoDto, streamInfoDto, context.deviceTokenId);
         } else {
             builder.setMessage("放送局IDが取得できなかった");
             builder.show();
