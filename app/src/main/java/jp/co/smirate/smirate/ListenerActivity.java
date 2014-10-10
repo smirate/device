@@ -2,7 +2,6 @@ package jp.co.smirate.smirate;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,24 +23,23 @@ import net.enswer.ear.*;
 
 import java.io.IOException;
 
+import jp.co.smirate.cst.EvixarCst;
+import jp.co.smirate.cst.GcmCst;
+import jp.co.smirate.cst.PostCst;
+import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.timer.PostTimerThred;
+import jp.co.smirate.utils.PostUtil;
 
-/**
- * 10秒感覚でテキストボックスの中身をアラート表示するのを作ってみた
- */
-public class ListenerActivity extends Activity {
-    /** POST用放送局ID保管フィールド. */
-    public String streamId4Post;
-    /** POST用番組情報保管フィールド. */
-    public JSONObject streamJson4Post;
+public class ListenerActivity extends Activity implements EvixarCst, GcmCst, PostCst {
+    /** POST用番組情報. */
+    public StreamInfoDto streamInfoDto4Post;
     /** POST用デバイストークンID. */
-    public String registrationId;
+    public String deviceTokenId;
 
     // 定期POST実行用タイマー
     private PostTimerThred postTimerThred;
 
     // evixar 処理用
-    private String liveAppKey;
     private EARSDK ear;
     private boolean finishEarInit;
     private boolean earIsRunning;
@@ -59,7 +55,7 @@ public class ListenerActivity extends Activity {
         setContentView(R.layout.activity_listener);
 
         // 定期POST実行用タイマーを作成
-        postTimerThred = new PostTimerThred(10000, this);
+        postTimerThred = new PostTimerThred(PERIOD, this);
 
         // evixar初期化
         finishEarInit = false;
@@ -69,7 +65,8 @@ public class ListenerActivity extends Activity {
         gcm = GoogleCloudMessaging.getInstance(getBaseContext());
         register();
 
-        // TODO:★★★★サーバーへregistrationIdを送る
+        //TODO:サーバーサイドできてから有効化
+        //PostUtil.post4DeviceTokenId(deviceTokenId);
     }
 
     // デバイストークン登録
@@ -78,9 +75,9 @@ public class ListenerActivity extends Activity {
             protected Object doInBackground(final Object... params) {
                 String token;
                 try {
-                    token = gcm.register("792401251374");
+                    token = gcm.register(PJ_NUMBER);
                     Log.i("registrationId", token);
-                    registrationId = token;
+                    deviceTokenId = token;
                 }
                 catch (IOException e) {
                     Log.i("Registration Error", e.getMessage());
@@ -162,37 +159,22 @@ public class ListenerActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 通知画面へ遷移
-     * @param view
-     */
-    public void toNotification(View view) {
-        switch (view.getId()){
-            case R.id.toNotification:
-                Intent intent = new Intent(this, NotificationActivity.class);
-                startActivity(intent);
-                break;
-        }
-    }
-
     // evixar初期化
     private void init() {
         metaResolver.init();
-
         earIsRunning = false;
-        liveAppKey = "v4aEbiBDtFI5g3mXL7Us6RRtGkLQbAzU";
-        String liveAccessKey = "dnZ2dnZ2dnbWJ8ptzKB+nKWv+ECxeU9rASmuzct3i7kwPCl2xWbPQFpk6fjbyX8g+AKDCco7B0OKwW9X3IOdJQfdz+drqZOA6DLMoDf32y0PcnzMeKV448QvZSmOcHOhSFZpvcLuNZphTOESLknvFtYrGW10Y25ooco0LJeSI3mQG2fT9pWSMA==";
         Context context = getBaseContext().getApplicationContext();
-        ear = new EARSDK(liveAppKey, liveAccessKey, context, earResultHandler, earErrorHandler);
+        ear = new EARSDK(Certification.APP.val, Certification.ACCESS.val, context, earResultHandler, earErrorHandler);
         finishEarInit = true;
     }
 
     // evixar用ハンドラー
     @SuppressLint("HandlerLeak")
-    private class EarResultHandler extends Handler {
+    private class EarResultHandler extends Handler implements EvixarCst {
         @Override
         public void handleMessage(Message msg) {
-            streamId4Post = null;
+
+            streamInfoDto4Post = null;
             EARMatchResult matchResult = (EARMatchResult)msg.obj;
             EARAppkeyMatchResult appkeyMatchResult = matchResult.appkeyMatchResults.get(matchResult.activeAppkey);
             switch (appkeyMatchResult.matchState) {
@@ -201,40 +183,47 @@ public class ListenerActivity extends Activity {
                         if(item instanceof EARStreamMatchItem){
                             EARStreamMatchItem streamMatchItem = (EARStreamMatchItem)item;
                             Log.i("RESULT", "streamId = " + streamMatchItem.streamId);
-                            streamId4Post = streamMatchItem.streamId;
+
+                            streamInfoDto4Post = new StreamInfoDto();
+                            streamInfoDto4Post.streamId = streamMatchItem.streamId;
 
                             metaResolver.resolve(streamMatchItem.streamId, new AsyncCallback() {
                                 public void onPreExecute() {
-                                    // do something
+                                    // 特に何もしない
                                 }
                                 public void onProgressUpdate(int progress) {
-                                    // do something
+                                    // 特に何もしない
                                 }
                                 public void onPostExecute(String response) {
-                                    // do something
-                                    // Log.i("META",response);
                                     try {
                                         JSONObject json = new JSONObject(response);
-                                        streamJson4Post = json;
+                                        streamInfoDto4Post.serviceId = json.getString(ResponseKey.SERVICEID.val);
+                                        streamInfoDto4Post.eventId = json.getString(ResponseKey.EVENTID.val);
+                                        streamInfoDto4Post.title = json.getString(ResponseKey.TITLE.val);
+                                        streamInfoDto4Post.start = json.getString(ResponseKey.START.val);
+                                        streamInfoDto4Post.end = json.getString(ResponseKey.END.val);
+                                        streamInfoDto4Post.detail = json.getString(ResponseKey.DETAIL.val);
+                                        streamInfoDto4Post.actors = json.getString(ResponseKey.ACTORS.val);
                                     } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        // 特に何もしない
+                                        Log.i("EvixarJsonError",e.getMessage());
                                     }
                                 }
                                 public void onCancelled() {
-                                    // do something
+                                    // 特に何もしない
                                 }
                             });
                         }
                     }
                     break;
                 case EAR_MATCHSTATE_NOT_MATCHED:
-                    Log.i("RESULT","EAR_MATCHSTATE_NOT_MATCHED");
+                    Log.i("EvixarNoMatch","EAR_MATCHSTATE_NOT_MATCHED");
                     break;
                 case EAR_MATCHSTATE_UNDEFINED:
-                    Log.i("RESULT","EAR_MATCHSTATE_UNDEFINED");
+                    Log.i("EvixarNoMatch","EAR_MATCHSTATE_UNDEFINED");
                     break;
                 case EAR_MATCHSTATE_ERROR:
-                    Log.i("RESULT","EAR_MATCHSTATE_ERROR");
+                    Log.i("EvixarNoMatch","EAR_MATCHSTATE_ERROR");
                     break;
                 default:
                     break;
@@ -248,7 +237,8 @@ public class ListenerActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             EARErrorCode code = (EARErrorCode)msg.obj;
-            Log.e("RESULT","errcode: " + code);
+            // エラーとなったからといって特に何もしない
+            Log.e("EvixarErrorHandler","errcode: " + code);
         }
     }
 }

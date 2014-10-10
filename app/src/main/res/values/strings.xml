@@ -5,5 +5,4 @@
     <string name="listenerDescription">待ち受け画面\n10秒間隔でＴＶから取得した放送局ＩＤをアラート表示</string>
     <string name="action_settings">Settings</string>
     <string name="notificationDescription">これは通知を表示する予定のActivityです。</string>
-
 </resources>

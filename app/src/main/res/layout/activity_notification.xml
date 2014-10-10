@@ -17,7 +17,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="待ち受け画面へ遷移"
+        android:text="TV ON"
         android:id="@+id/toListener"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

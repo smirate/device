@@ -16,8 +16,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
+import jp.co.smirate.cst.NotificationCst;
 
-public class NotificationActivity extends Activity {
+
+public class NotificationActivity extends Activity implements NotificationCst {
     public String testMsg;
 
     @Override
@@ -26,7 +28,7 @@ public class NotificationActivity extends Activity {
         setContentView(R.layout.activity_notification);
 
         Intent intent = getIntent();
-        String notification = intent.getStringExtra("notification");
+        String notification = intent.getStringExtra(NOTIFICATION_KEY);
         if(intent != null && notification != null) {
             TextView text = (TextView) this.findViewById(R.id.notification);
             text.setText(notification);

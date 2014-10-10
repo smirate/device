@@ -1,12 +1,10 @@
 package jp.co.smirate.timer;
 
 import android.app.AlertDialog;
-import android.util.Log;
-import android.widget.EditText;
 
-import org.json.JSONException;
-
+import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.smirate.ListenerActivity;
+import jp.co.smirate.utils.PostUtil;
 
 /**
  * 定期POST実行用タイマー
@@ -28,53 +26,28 @@ public class PostTimerThred extends AbstractTimerThred {
      */
     @Override
     protected void invokersMethod() {
-        // TODO: post処理の実装
-        String streamId = context.streamId4Post;
+        StreamInfoDto streamInfoDto = context.streamInfoDto4Post;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("定期POSTタイマー" + context.registrationId);
-        if(streamId != null) {
-            try {
-                String buf = "放送局：" + streamId;
-                buf += "\nタイトル：" + context.streamJson4Post.getString("title");
-                buf += "\n開始時刻" + context.streamJson4Post.getString("start");
-                buf += "\n終了時刻" + context.streamJson4Post.getString("end");
-                buf += "\n番組概要" + context.streamJson4Post.getString("description");
-                buf += "\n番組内容" +context.streamJson4Post.getString("detail");
-                buf += "\n出演者" + context.streamJson4Post.getString("actors");
-                buf += "\nサービスID" + context.streamJson4Post.getString("service_id");
-                buf += "\nイベントID" + context.streamJson4Post.getString("event_id");
+        builder.setTitle("定期POSTタイマー");
+        if (streamInfoDto != null) {
+            String buf = "放送局：" + streamInfoDto.streamId;
+            buf += "\nタイトル：" + streamInfoDto.title;
+            buf += "\n開始時刻" + streamInfoDto.start;
+            buf += "\n終了時刻" + streamInfoDto.end;
+            buf += "\n番組概要" + streamInfoDto.description;
+            buf += "\n番組内容" + streamInfoDto.detail;
+            buf += "\n出演者" + streamInfoDto.actors;
+            buf += "\nサービスID" + streamInfoDto.serviceId;
+            buf += "\nイベントID" + streamInfoDto.eventId;
+            builder.setMessage(buf);
+            builder.show();
 
-                builder.setMessage(buf);
-                builder.show();
-            } catch (JSONException e) {
-
-            }
-
+            //TODO:★★★サーバーサイドできてから有効化
+            //PostUtil.post4StreamInfo(streamInfoDto, context.deviceTokenId);
         } else {
             builder.setMessage("放送局IDが取得できなかった");
             builder.show();
         }
     }
-/*
-
-    public String doPost(String url) {
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpPost method = new HttpPost(url);
-
-        // リクエストパラメータの設定
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("params_id", getId()));
-        params.add(new BasicNameValuePair("params_data", getData()));
-        try {
-            method.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
-            HttpResponse response = client.execute(method);
-            int status = response.getStatusLine().getStatusCode();
-            return "Status:" + status;
-        } catch (Exception e) {
-            return "Error:" + e.getMessage();
-        }
-    }
-    */
 }
