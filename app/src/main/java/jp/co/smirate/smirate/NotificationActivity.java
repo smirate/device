@@ -38,8 +38,8 @@ public class NotificationActivity extends Activity implements NotificationCst {
             TextView titleTextView = (TextView) this.findViewById(R.id.title);
             titleTextView.setText(title);
 
-            //TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
-            //smirateTextView.setText(smirate + "%");
+            TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
+            smirateTextView.setText(smirate + "%");
 
             // 通知バー除去
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -67,11 +67,11 @@ public class NotificationActivity extends Activity implements NotificationCst {
     }
 
     public void toListener(View view) {
-        /*switch (view.getId()){
+        switch (view.getId()){
             case R.id.toListener:
                 Intent intent = new Intent(this, ListenerActivity.class);
                 startActivity(intent);
                 break;
-        }*/
+        }
     }
 }

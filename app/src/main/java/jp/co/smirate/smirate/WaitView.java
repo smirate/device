@@ -13,7 +13,7 @@ public class WaitView extends View{
     Paint paint = new Paint();
     int playerX = 250;
     int playerVX = 10;
-    int playerY = 1000;
+    int playerY = 1200;
     int playerVY = 0;
 
     //画像読み込み
@@ -29,13 +29,13 @@ public class WaitView extends View{
     public void onDraw(Canvas c) {
         //数値処理
         playerX += playerVX;
-        if(playerX<10 || 830<playerX) playerVX *= -1;
+        if(playerX<0 || 830<playerX) playerVX *= -1;
         c.drawBitmap(bg, 0, 0, paint);
         if(playerY<0) playerY = 0;
         c.drawBitmap(main_item, playerX, playerY, paint);
         playerY += playerVY;
         playerVY += 4;
-        if(playerY>1000) playerY = 1000;
+        if(playerY>1200) playerY = 1200;
 
         //roop
         invalidate();
