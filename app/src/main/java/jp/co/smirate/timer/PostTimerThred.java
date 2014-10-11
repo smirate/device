@@ -30,10 +30,10 @@ public class PostTimerThred extends AbstractTimerThred {
         StreamInfoDto streamInfoDto = context.streamInfoDto4Post;
         OmronInfoDto omronInfoDto = context.omronInfoDto4Post;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("定期POSTタイマー");
+        //AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        //builder.setTitle("定期POSTタイマー");
         if (streamInfoDto != null) {
-            String buf = "放送局：" + streamInfoDto.streamId;
+           /* String buf = "放送局：" + streamInfoDto.streamId;
             buf += "\nタイトル：" + streamInfoDto.title;
             buf += "\n開始時刻" + streamInfoDto.start;
             buf += "\n終了時刻" + streamInfoDto.end;
@@ -43,16 +43,16 @@ public class PostTimerThred extends AbstractTimerThred {
             buf += "\nサービスID" + streamInfoDto.serviceId;
             buf += "\nイベントID" + streamInfoDto.eventId;
             builder.setMessage(buf);
-            builder.show();
+            builder.show();*/
 
             //TODO: bluetoothへコマンド送信
-            context.write(new byte[] { 0x50, 0x4d, 0x03 });
+            //context.write(new byte[] { 0x50, 0x4d, 0x03 });
 
 
             PostUtil.post4StreamInfo(omronInfoDto, streamInfoDto, context.deviceTokenId);
         } else {
-            builder.setMessage("放送局IDが取得できなかった");
-            builder.show();
+            //builder.setMessage("放送局IDが取得できなかった");
+            //builder.show();
         }
     }
 }

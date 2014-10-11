@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -34,7 +35,7 @@ import jp.co.smirate.dto.StreamInfoDto;
 import jp.co.smirate.timer.PostTimerThred;
 import jp.co.smirate.utils.PostUtil;
 
-public class ListenerActivity extends FragmentActivity implements EvixarCst, GcmCst, PostCst ,BluetoothFragment.BluetoothCallback {
+public class ListenerActivity extends FragmentActivity implements EvixarCst, GcmCst, PostCst  {
     /** POST用番組情報. */
     public StreamInfoDto streamInfoDto4Post;
     /** POST用OMRON情報. */
@@ -56,13 +57,15 @@ public class ListenerActivity extends FragmentActivity implements EvixarCst, Gcm
     private GoogleCloudMessaging gcm;
 
     // bluetooth処理用
-    BluetoothFragment mBluetoothFragment;
-    private static final String TAG = "MainActivity";
+    //BluetoothFragment mBluetoothFragment;
+    //private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listener);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(new WaitView(this));
+        //setContentView(R.layout.activity_listener);
 
         // 定期POST実行用タイマーを作成
         //test
@@ -81,16 +84,16 @@ public class ListenerActivity extends FragmentActivity implements EvixarCst, Gcm
         register();
 
         // bluetooth処理用
-        Bundle args = new Bundle();
+        /*Bundle args = new Bundle();
         args.putInt(BluetoothFragment.EXTRA_UUID, BluetoothFragment.SPP_MODE);
         if (mBluetoothFragment == null) {
             mBluetoothFragment = new BluetoothFragment();
             getSupportFragmentManager().beginTransaction().add(mBluetoothFragment, "BluetoothFragment").commit();
-        }
+        }*/
     }
 
     // bluetooth処理用
-    public void onCheckAvailability(boolean isAvailable) {
+    /*public void onCheckAvailability(boolean isAvailable) {
         String text = "onCheckAvailability : " + isAvailable;
         Log.d(TAG, text);
         showToast(text);
@@ -130,7 +133,7 @@ public class ListenerActivity extends FragmentActivity implements EvixarCst, Gcm
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
-
+*/
     // デバイストークン登録
     private void register() {
         new AsyncTask(){

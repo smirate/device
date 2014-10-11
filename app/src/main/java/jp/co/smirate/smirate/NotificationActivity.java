@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -25,6 +26,7 @@ public class NotificationActivity extends Activity implements NotificationCst {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_notification);
 
         Intent intent = getIntent();
@@ -36,8 +38,8 @@ public class NotificationActivity extends Activity implements NotificationCst {
             TextView titleTextView = (TextView) this.findViewById(R.id.title);
             titleTextView.setText(title);
 
-            TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
-            smirateTextView.setText(smirate + "%");
+            //TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
+            //smirateTextView.setText(smirate + "%");
 
             // 通知バー除去
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -65,11 +67,11 @@ public class NotificationActivity extends Activity implements NotificationCst {
     }
 
     public void toListener(View view) {
-        switch (view.getId()){
+        /*switch (view.getId()){
             case R.id.toListener:
                 Intent intent = new Intent(this, ListenerActivity.class);
                 startActivity(intent);
                 break;
-        }
+        }*/
     }
 }
