@@ -65,6 +65,7 @@ public class ListenerActivity extends FragmentActivity implements EvixarCst, Gcm
         setContentView(R.layout.activity_listener);
 
         // 定期POST実行用タイマーを作成
+        //test
         postTimerThred = new PostTimerThred(PERIOD, this);
 
         // TODO:omron関連のなにか。笑顔かどうかを表す何かを送ることになる想定

@@ -27,7 +27,7 @@ public class ExternalReceiver extends BroadcastReceiver implements NotificationC
         String smirate = msgsArray[1];
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(android.R.drawable.btn_default, Msg.TITLE.val, System.currentTimeMillis());
+        Notification notification = new Notification(android.R.drawable.btn_default, Msg.TITLE.val, System.currentTimeMillis());//通知
         Intent newIntent = new Intent(context, NotificationActivity.class);
         newIntent.putExtra(NotificationKey.TITLE.val, title);
         newIntent.putExtra(NotificationKey.SMIRATE.val, smirate);
