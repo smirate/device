@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.49">
+        android:layout_weight="0.13">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,6 +67,15 @@
             android:textColor="#FF8888"
             android:layout_below="@+id/smirateText"
             android:layout_toEndOf="@+id/smirateText" />
+        <ImageView android:src="@drawable/smile40"
+            android:id="@+id/smirate_img"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"/>
 
         </LinearLayout>
 
