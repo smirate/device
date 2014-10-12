@@ -4,18 +4,12 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import java.io.IOException;
 
 import jp.co.smirate.cst.NotificationCst;
 
@@ -33,6 +27,9 @@ public class NotificationActivity extends Activity implements NotificationCst {
 
         String title = intent.getStringExtra(NotificationKey.TITLE.val);
         String smirate = intent.getStringExtra(NotificationKey.SMIRATE.val);
+
+        // titleを解析して適切な処理をする
+        title = title.substring(0,5) + "...";
 
         if(intent != null && title != null && smirate != null) {
             TextView titleTextView = (TextView) this.findViewById(R.id.title);
