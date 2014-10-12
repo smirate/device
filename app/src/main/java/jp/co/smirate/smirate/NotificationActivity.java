@@ -43,8 +43,6 @@ public class NotificationActivity extends Activity implements NotificationCst {
             TextView titleTextView = (TextView) this.findViewById(R.id.title);
             titleTextView.setText(title);
 
-            
-
             TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
             if(Integer.parseInt(smirate)>99){
                 ImageView smirate_image = (ImageView) this.findViewById(R.id.smirate_img);
@@ -52,14 +50,17 @@ public class NotificationActivity extends Activity implements NotificationCst {
             }else if(Integer.parseInt(smirate)>79){
                 ImageView smirate_image = (ImageView) this.findViewById(R.id.smirate_img);
                 smirate_image.setImageResource(R.drawable.smile80);
+                smirate = " "+smirate;
             }else if(Integer.parseInt(smirate)>59){
                 ImageView smirate_image = (ImageView) this.findViewById(R.id.smirate_img);
                 smirate_image.setImageResource(R.drawable.smile60);
+                smirate = " "+smirate;
             }else{
                 ImageView smirate_image = (ImageView) this.findViewById(R.id.smirate_img);
                 smirate_image.setImageResource(R.drawable.smile40);
+                smirate = " "+smirate;
             }
-            smirateTextView.setText(smirate + "%");
+            smirateTextView.setText(" "+smirate + "%");
 
             // 通知バー除去
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
