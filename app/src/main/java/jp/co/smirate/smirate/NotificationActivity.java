@@ -41,6 +41,7 @@ public class NotificationActivity extends Activity implements NotificationCst {
 
         if(intent != null && title != null && smirate != null) {
             TextView titleTextView = (TextView) this.findViewById(R.id.title);
+            titleTextView.setSingleLine();
             titleTextView.setText(title);
 
             TextView smirateTextView = (TextView) this.findViewById(R.id.smirate);
